@@ -15,6 +15,7 @@ public class LexerTest {
     public void testLexer() throws IOException, ParseException {
         ClassLoader classLoader = getClass().getClassLoader();
         Lexer l = new Lexer(new FileReader(classLoader.getResource("while.stone").getFile()));
+        // TODO: 改成对比数组
         for (Token t ; (t = l.read())!= Token.EOF;) {
             System.out.println("=> " + t.getText());
         }
