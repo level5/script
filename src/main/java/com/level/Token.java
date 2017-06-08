@@ -13,7 +13,7 @@ public abstract class Token {
 
     public int lineNumer;
 
-    protected  Token(int line) {
+    protected Token(int line) {
         this.lineNumer = line;
     }
 
