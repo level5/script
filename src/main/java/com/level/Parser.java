@@ -282,6 +282,9 @@ public class Parser {
                     @Override
                     protected ASTree make0(Object arg) throws Exception {
                         List<ASTree> results = (List<ASTree>) arg;
+                        // 这里是如果这个树只有一个子节点，这个List<ASTree>就没有存在的必要,只会造成抽象语法树
+                        // 有很多没有用的节点.
+                        // 这么处理也只在f == null的情况下.才这么做. 等于是rule没有传入class
                         if (results.size() == 1) {
                             return results.get(0);
                         } else {
@@ -297,6 +300,7 @@ public class Parser {
                 return null;
             }
             try {
+                // 先看看是否有一个叫做create对的静态构造方法
                 final Method m = clazz.getMethod(factoryName, new Class<?>[]{argType});
                 return new Factory() {
                     @Override
