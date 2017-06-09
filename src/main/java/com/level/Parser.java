@@ -4,7 +4,6 @@ import com.level.ast.ASTLeaf;
 import com.level.ast.ASTList;
 import com.level.ast.ASTree;
 import com.level.exceptions.ParseException;
-import jdk.nashorn.internal.runtime.ParserException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -227,7 +226,7 @@ public class Parser {
         public void parse(Lexer lexer, List<ASTree> res) throws ParseException {
             ASTree right = factor.parse(lexer);
             Precedence prec;
-            while ((prec = nextOperator(lexter)) != null) {
+            while ((prec = nextOperator(lexer)) != null) {
                 right = doShift(lexer, right, prec.value);
             }
             res.add(right);
@@ -238,7 +237,7 @@ public class Parser {
             list.add(new ASTLeaf(lexer.read()));
             ASTree right = factor.parse(lexer);
             Precedence next;
-            while ((next = nexOperator(lexer)) != null && rightIsExpr(prec, next)) {
+            while ((next = nextOperator(lexer)) != null && rightIsExpr(prec, next)) {
                 right = doShift(lexer, right, next.value);
             }
             list.add(right);
@@ -259,7 +258,7 @@ public class Parser {
                 return prec <= nextPrec.value;
             }
         }
-        protected boolean match(Lexer lexer) throws ParserException {
+        protected boolean match(Lexer lexer) throws ParseException {
             return factor.match(lexer);
         }
     }
@@ -355,6 +354,7 @@ public class Parser {
     public static Parser rule() {
         return rule(null);
     }
+
     public static Parser rule(Class<? extends ASTree> clazz) {
         return new Parser(clazz);
     }
@@ -386,8 +386,67 @@ public class Parser {
     public Parser string() {
         return string(null);
     }
+
     public Parser string(Class<? extends ASTLeaf> clazz) {
         elements.add(new StrToken(clazz));
+        return this;
+    }
+
+    public Parser token(String... pat) {
+        elements.add(new Leaf(pat));
+        return this;
+    }
+
+    public Parser sep(String... pat) {
+        elements.add(new Skip(pat));
+        return this;
+    }
+
+    public Parser ast(Parser p) {
+        elements.add(new Tree(p));
+        return this;
+    }
+
+    public Parser or(Parser... p) {
+        elements.add(new OrTree(p));
+        return this;
+    }
+
+    public Parser maybe(Parser p) {
+        Parser p2 = new Parser(p);
+        p2.reset();
+        elements.add(new OrTree(new Parser[] {p, p2}));
+        return this;
+    }
+
+    public Parser option(Parser p) {
+        elements.add(new Repeat(p, false));
+        return this;
+    }
+
+    public Parser repeat(Parser p) {
+        elements.add(new Repeat(p, false));
+        return this;
+    }
+
+    public Parser expression(Parser subexp, Operators operators) {
+        elements.add(new Expr(null, subexp, operators));
+        return this;
+    }
+
+    public Parser expression(Class<? extends ASTree> clazz, Parser subexp, Operators operators) {
+        elements.add(new Expr(clazz, subexp, operators));
+        return this;
+    }
+
+    public Parser insertChoice(Parser p) {
+        Element e = elements.get(0);
+        if (e instanceof OrTree) {
+            ((OrTree)e).insert(p);
+        } else {
+            Parser otherwise = new Parser(this);
+            or(p, otherwise);
+        }
         return this;
     }
 }
