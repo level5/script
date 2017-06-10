@@ -44,7 +44,7 @@ public class BasicParser {
             rule(WhileStmnt.class).sep("while").ast(expr).ast(block),
             simple
     );
-    Parser program = rule().or(statement, rule(NullStmnt.class).sep(";", Token.EOL));
+    Parser program = rule().or(statement, rule(NullStmnt.class)).sep(";", Token.EOL);
 
     public BasicParser() {
         reserved.add(";");

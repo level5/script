@@ -19,7 +19,7 @@ public class BasicEnv implements Environment {
     }
 
     @Override
-    public void get(String name) {
-        values.get(name);
+    public Object get(String name) {
+        return values.get(name);
     }
 }

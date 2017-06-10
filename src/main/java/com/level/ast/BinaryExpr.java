@@ -29,7 +29,7 @@ public class BinaryExpr extends ASTList {
     @Override
     public Object eval(Environment env) {
         String op = operator();
-        if (op == "=") {
+        if ("=".equals(op)) {
             Object right = right().eval(env);
             return computeAssign(env, right);
         }
@@ -81,11 +81,11 @@ public class BinaryExpr extends ASTList {
     }
 
 
-    private Object computeAssign(Environment env, Object right) {
+    private Object computeAssign(Environment env, Object rvalue) {
         ASTree l = left();
         if (l instanceof Name) {
-            env.put(((Name)l).name(), right);
-            return right;
+            env.put(((Name)l).name(), rvalue);
+            return rvalue;
         } else {
             throw new StoneException("bad assignment", this);
         }
