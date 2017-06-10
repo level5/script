@@ -21,7 +21,7 @@ public class Lexer {
     //                                                    \p{Punct}表示的是任意符号字符
 
     private Pattern pattern = Pattern.compile(regexPat);
-    private ArrayList<Token> queue = new ArrayList<Token>(); // 用来保存预读的单词
+    private ArrayList<Token> queue = new ArrayList<>(); // 用来保存预读的单词
     private boolean hasMore;
     private LineNumberReader reader;
 

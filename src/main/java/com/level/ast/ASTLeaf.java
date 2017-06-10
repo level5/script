@@ -1,6 +1,8 @@
 package com.level.ast;
 
+import com.level.Environment;
 import com.level.Token;
+import com.level.exceptions.StoneException;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -18,6 +20,11 @@ public class ASTLeaf extends ASTree {
 
     public ASTLeaf(Token t) {
         token = t;
+    }
+
+    @Override
+    public Object eval(Environment env) {
+        throw new StoneException("cannot eval: " + toString(), this);
     }
 
     @Override

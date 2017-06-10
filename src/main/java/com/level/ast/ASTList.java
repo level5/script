@@ -1,5 +1,8 @@
 package com.level.ast;
 
+import com.level.Environment;
+import com.level.exceptions.StoneException;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -12,6 +15,11 @@ public class ASTList extends ASTree {
 
     public ASTList(List<ASTree> list) {
         children = list;
+    }
+
+    @Override
+    public Object eval(Environment env) {
+        throw new StoneException("cannot eval: " + toString(), this);
     }
 
     @Override

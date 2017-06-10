@@ -1,5 +1,6 @@
 package com.level.ast;
 
+import com.level.Environment;
 import com.level.Token;
 
 /**
@@ -13,5 +14,10 @@ public class NumberLiteral extends ASTLeaf {
 
     public int value() {
         return token.getNumber();
+    }
+
+    @Override
+    public Object eval(Environment env) {
+        return value();
     }
 }

@@ -1,5 +1,7 @@
 package com.level.ast;
 
+import com.level.Environment;
+
 import java.util.List;
 
 /**
@@ -21,6 +23,20 @@ public class IfStmnt extends ASTList {
 
     public ASTree elseBlock() {
         return numChildren() > 2 ? child(2) : null;
+    }
+
+    public Object eval(Environment env) {
+        Object c = condition().eval(env);
+        if (c instanceof Integer && ((Integer) c).intValue() != FALSE) {
+            return thenBlock().eval(env);
+        } else {
+            ASTree b = elseBlock();
+            if (b == null) {
+                return 0;
+            } else {
+                return b.eval(env);
+            }
+        }
     }
 
     public String toString() {
