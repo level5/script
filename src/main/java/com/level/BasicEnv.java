@@ -1,5 +1,7 @@
 package com.level;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 import java.util.HashMap;
 
 /**
@@ -21,5 +23,20 @@ public class BasicEnv implements Environment {
     @Override
     public Object get(String name) {
         return values.get(name);
+    }
+
+    @Override
+    public void putNew(String name, Object value) {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public Environment where(String name) {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public void setOuter(Environment e) {
+        throw new NotImplementedException();
     }
 }

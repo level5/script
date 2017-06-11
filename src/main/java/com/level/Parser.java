@@ -84,7 +84,7 @@ public class Parser {
         protected void parse(Lexer lexer, List<ASTree> res) throws ParseException {
             while (parser.match(lexer)) {
                 ASTree t = parser.parse(lexer);
-                // 这个t.numChildren() > 0 的意义何在？　已经有子节点的ｔ，没有的话为啥忽略呢？
+                // ASTList如果没有子元素，就忽略了。
                 if (t.getClass() != ASTList.class || t.numChildren() > 0) {
                     res.add(t);
                 }
@@ -346,6 +346,14 @@ public class Parser {
         return factory.make(results);
     }
 
+    /**
+     *
+     * 只需要match第一部分就可以了？
+     *
+     * @param lexer
+     * @return
+     * @throws ParseException
+     */
     public boolean match(Lexer lexer) throws ParseException {
         if (elements.size() == 0) {
             return true;
@@ -416,6 +424,7 @@ public class Parser {
         return this;
     }
 
+    // maybe 和 option的区别就是maybe会有一个空的树在上面
     public Parser maybe(Parser p) {
         Parser p2 = new Parser(p);
         p2.reset();
@@ -424,7 +433,7 @@ public class Parser {
     }
 
     public Parser option(Parser p) {
-        elements.add(new Repeat(p, false));
+        elements.add(new Repeat(p, true));
         return this;
     }
 
