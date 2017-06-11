@@ -33,6 +33,22 @@ public class BasicParserTest {
     }
 
     @Test
+    public void testFuncParser() throws ParseException, FileNotFoundException {
+        reader = new FileReader(classLoader.getResource("fib.stone").getFile());
+        Lexer l = new Lexer(reader);
+
+        FuncParser bp = new FuncParser();
+        Environment env = new NestedEnv();
+        while (l.peek(0) != Token.EOF) {
+            ASTree ast = bp.parse(l);
+            if (!(ast instanceof NullStmnt)) {
+                Object result = ast.eval(env);
+                System.out.println("=> " + ast.toString() + ": " + result);
+            }
+        }
+    }
+
+    @Test
     public void testRun() throws ParseException {
         Lexer l = new Lexer(reader);
         Environment env = new BasicEnv();
